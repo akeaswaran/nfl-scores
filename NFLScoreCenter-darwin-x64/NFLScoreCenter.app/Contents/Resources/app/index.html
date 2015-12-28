@@ -2,7 +2,7 @@
 
 	<head>
 		<link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <title>NFLScoreCenter</title>
+    <title>NFL ScoreCenter</title>
    	<style type="text/css">
    	.winning{
    		font-weight: bold;
@@ -24,7 +24,6 @@
 	</head>
 
 	<body>
-
 		<div class="container-fluid">
       <div id="offlineAlert" class="alert alert-danger alert-dismissible fade in" role="alert" style="display:none;">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -54,12 +53,14 @@
      <footer class="bd-footer text-muted" style="text-align:center;" role="contentinfo">
         <div class="container">
           <p>Built by <a id="github" href="https://github.com/akeaswaran">@akeaswaran</a>.</p>
-          <p>Currently v0.1. Code licensed <a id="license" href="https://github.com/twbs/bootstrap/blob/master/LICENSE">MIT</a>.</p>
+          <p>Currently v0.1.1. Code licensed <a id="license" href="https://github.com/akeaswaran/nfl-scores/blob/master/LICENSE.md">MIT</a>.</p>
         </div>
       </footer>
    </body>
    <script>
    $(document).ready(function() {
+		 setTimeout("location.reload(true);", 30000);
+
      var isOnline = require('is-online');
      isOnline(function(err, online) {
          if (online) {
@@ -81,7 +82,6 @@
             			time = 'Halftime';
             		} else if(game.q == 'F' || game.q == 'FO') {
             			time = 'Final, ' + game.d;
-                  status = ' class="table-success"';
             		} else if(game.q !== 'P'){
             			time = game.q + "Q";
             		} else {
@@ -91,22 +91,29 @@
                 if(parseInt(game.rz) > 0) {
             			status = ' class="table-danger"';
             		} else {
-                  status = '';
-                }
+									status = '';
+								}
 
-                if (game.hs > game.vs) {
-                  home_winner = ' class="winning"';
-                } else if (game.hs < game.vs) {
-                  away_winner = ' class="winning"';
-                } else {
-                  home_winner = '';
-                  away_winner = '';
-                }
+                if (game.q == 'F' || game.q == 'FO') {
+									if (game.hs > game.vs) {
+	                  home_winner = ' class="winning"';
+										away_winner = '';
+	                } else if (game.hs < game.vs) {
+	                  away_winner = ' class="winning"';
+										home_winner = '';
+	                } else {
+	                  home_winner = '';
+	                  away_winner = '';
+	                }
+								} else {
+									home_winner = '';
+									away_winner = '';
+								}
+
                 var openGameString = 'openGame(' + link + ')';
                 console.log(openGameString);
                 var gameHTML = '<tr id="game-' + game.eid + '" ' + status + '><td id="time"><a href="" onClick="'+ openGameString + '">'+ time +'</a></td><td id="away_team" ' + away_winner + '>' + game.vnn +'</td><td id="away-score" ' + away_winner + ' style="text-align:center;">' + game.vs + '</td><td id="home_team" ' + home_winner + '>' + game.hnn + '</td><td id="home-score" ' + home_winner + ' style="text-align:center;">' + game.hs + '</td></tr>';
                 $('#NFL-schedule-games').append(gameHTML);
-
             	}
              } else {
                console.log('ERROR');
@@ -125,7 +132,7 @@
 
      $('#license').click(function(event) {
        event.preventDefault();
-       shell.openExternal('https://github.com/twbs/bootstrap/blob/master/LICENSE');
+       shell.openExternal('https://github.com/akeaswaran/nfl-scores/blob/master/LICENSE.md');
      });
     });
    </script>

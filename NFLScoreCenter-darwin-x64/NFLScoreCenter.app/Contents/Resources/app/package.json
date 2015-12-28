@@ -1,12 +1,12 @@
 {
   "name": "nfl-scores",
   "description": "A small Mac desktop app to keep track of current NFL scores.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "package": "asar pack NFLScoreCenter-darwin-x64/NFLScoreCenter.app/Contents/Resources/app NFLScoreCenter-darwin-x64/NFLScoreCenter.app/Contents/Resources/app.asar",
-    "build": "rm -rf NFLScoreCenter-darwin-x64 && electron-packager . NFLScoreCenter --platform=darwin --arch=x64 --version=0.36.2 && cp Icon.icns NFLScoreCenter-darwin-x64/NFLScoreCenter.app/Contents/Resources/atom.icns && npm run package"
+    "build": "rm -rf NFLScoreCenter-darwin-x64 && electron-packager . NFLScoreCenter --ignore='(/Users/akeaswaran/Documents/Apps/nfl-scores/README.md|/Users/akeaswaran/Documents/Apps/nfl-scores/LICENSE.md|img/img1.png|npm-debug.log|.DS_Store)' --platform=darwin --arch=x64 --version=0.36.2 && cp Icon.icns NFLScoreCenter-darwin-x64/NFLScoreCenter.app/Contents/Resources/atom.icns && npm run package"
   },
   "devDependencies": {
     "asar": "^0.9.0",
