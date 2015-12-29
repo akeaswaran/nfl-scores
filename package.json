@@ -1,7 +1,7 @@
 {
   "name": "nfl-scores",
   "description": "A small Mac desktop app to keep track of current NFL scores.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "main.js",
   "scripts": {
     "start": "electron .",

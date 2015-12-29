@@ -25,7 +25,7 @@
 
 	<body>
 		<div class="container-fluid">
-      <div id="offlineAlert" class="alert alert-danger alert-dismissible fade in" role="alert" style="display:none;">
+      <div id="errorAlert" class="alert alert-danger alert-dismissible fade in" role="alert" style="display:none;">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -53,7 +53,7 @@
      <footer class="bd-footer text-muted" style="text-align:center;" role="contentinfo">
         <div class="container">
           <p>Built by <a id="github" href="https://github.com/akeaswaran">@akeaswaran</a>.</p>
-          <p>Currently v0.1.1. Code licensed <a id="license" href="https://github.com/akeaswaran/nfl-scores/blob/master/LICENSE.md">MIT</a>.</p>
+          <p>Currently v0.1.2. Code licensed <a id="license" href="https://github.com/akeaswaran/nfl-scores/blob/master/LICENSE.md">MIT</a>.</p>
         </div>
       </footer>
    </body>
@@ -64,7 +64,7 @@
      var isOnline = require('is-online');
      isOnline(function(err, online) {
          if (online) {
-           $('#offlineAlert').hide();
+           $('#errorAlert').hide();
            $.getJSON('http://www.nfl.com/liveupdate/scorestrip/ss.json', function(jsonData) {
              if(jsonData) {
               $('#week_number').html(' Week ' + jsonData.w + ' ');
@@ -78,17 +78,27 @@
                 var status;
                 var link = '\'http://www.nfl.com/gamecenter/' + game.eid + '/' + jsonData.y + '/REG' + jsonData.w + '/' + game.vnn + '@' + game.hnn + '\'';
 
-                if(game.q == 'H') {
+								if (game.q == 'H') {
             			time = 'Halftime';
-            		} else if(game.q == 'F' || game.q == 'FO') {
-            			time = 'Final, ' + game.d;
-            		} else if(game.q !== 'P'){
-            			time = game.q + "Q";
+            		} else if (game.q == 'F') {
+									time = 'Final, ' + game.d;
+								} else if (game.q == 'FO') {
+									time = 'F/OT, ' + game.d;
+            		} else if (parseInt(game.q) !== 'P'){
+            			if (parseInt(game.q) > 4) {
+										if ((parseInt(game.q) - 4) > 1) {
+											time = (parseInt(game.q) - 4) + "OT";
+										} else {
+											time = "OT";
+										}
+									} else {
+										time = game.q + "Q";
+									}
             		} else {
             			time = game.d + " " + game.t;
             		}
 
-                if(parseInt(game.rz) > 0) {
+								if (parseInt(game.rz) > 0) {
             			status = ' class="table-danger"';
             		} else {
 									status = '';
@@ -110,17 +120,18 @@
 									away_winner = '';
 								}
 
-                var openGameString = 'openGame(' + link + ')';
-                console.log(openGameString);
-                var gameHTML = '<tr id="game-' + game.eid + '" ' + status + '><td id="time"><a href="" onClick="'+ openGameString + '">'+ time +'</a></td><td id="away_team" ' + away_winner + '>' + game.vnn +'</td><td id="away-score" ' + away_winner + ' style="text-align:center;">' + game.vs + '</td><td id="home_team" ' + home_winner + '>' + game.hnn + '</td><td id="home-score" ' + home_winner + ' style="text-align:center;">' + game.hs + '</td></tr>';
-                $('#NFL-schedule-games').append(gameHTML);
+								var openGameString = 'openGame(' + link + ')';
+								console.log(openGameString);
+								var gameHTML = '<tr id="game-' + game.eid + '" ' + status + '><td id="time"><a href="" onClick="'+ openGameString + '">'+ time +'</a></td><td id="away_team" ' + away_winner + '>' + game.vnn +'</td><td id="away-score" ' + away_winner + ' style="text-align:center;">' + game.vs + '</td><td id="home_team" ' + home_winner + '>' + game.hnn + '</td><td id="home-score" ' + home_winner + ' style="text-align:center;">' + game.hs + '</td></tr>';
+								$('#NFL-schedule-games').append(gameHTML);
             	}
              } else {
-               console.log('ERROR');
+               $('#errorAlert').html('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Error:</strong> There was an error parsing the data from NFL.com. Please hit Cmd+R to refresh the app.');
+							 $('#errorAlert').show();
              }
            });
          } else {
-            $('#offlineAlert').show();
+            $('#errorAlert').show();
             $('#week_number').html('Cannot connect to NFL.com');
          }
      });
